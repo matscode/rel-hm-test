@@ -9,7 +9,8 @@ import {
 } from "react-router-dom";
 
 import './index.css';
-// import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'react-tabulator/css/bootstrap/tabulator_bootstrap4.min.css';
 import 'react-tabulator/lib/styles.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';

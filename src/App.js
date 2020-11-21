@@ -4,6 +4,14 @@ import React, {useState} from "react";
 import {ReactTabulator} from 'react-tabulator'
 
 function App () {
+    // generate some table data
+    const numOfRecord = 12;
+    const tableData = [];
+    for (let i = 0; i < numOfRecord; i++) {
+
+    }
+
+
     const [data] = useState([
         { id: 1, name: "Oli Bob", age: "12", col: "red", dob: "" },
         { id: 2, name: "Mary May", age: "1", col: "blue", dob: "14/05/1982" },
@@ -13,12 +21,12 @@ function App () {
     ])
 
     const columns = [
-        { title: "Name", field: "name", width: 150 },
-        { title: "Age", field: "age", hozAlign: "left", formatter: "progress" },
+        { title: "Name", field: "name" },
+        { title: "Age", field: "age" },
         { title: "Favourite Color", field: "col" },
-        { title: "Date Of Birth", field: "dob", hozAlign: "center" },
-        { title: "Rating", field: "rating", hozAlign: "center", formatter: "star" },
-        { title: "Passed?", field: "passed", hozAlign: "center", formatter: "tickCross" }
+        { title: "Date Of Birth", field: "dob" },
+        { title: "Rating", field: "rating" },
+        { title: "Passed?", field: "passed" }
     ];
 
     return (
