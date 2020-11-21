@@ -181,7 +181,7 @@ function App () {
 
             <main>
                 <section className="employee-record table-responsive">
-                    <table className="table table-striped table-borderless employee-records-table">
+                    <table className="table table-striped table-borderless table-hover employee-records-table">
                         <thead className="thead-dark">
                         {tableHeader}
                         </thead>
