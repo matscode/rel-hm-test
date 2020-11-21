@@ -1,10 +1,11 @@
 import React, {useState} from "react";
-import {ReactTabulator} from 'react-tabulator';
 import faker from 'faker';
+import * as _ from 'lodash'
 
 function App () {
     // generate some table data
-    const numOfRecord = 5;
+
+    const [numOfRecord] = useState(10);
     const genders = ['male', 'female']
     const departments = [
         'Engineering',
@@ -113,7 +114,7 @@ function App () {
                 {td.date_employed}
             </td>
             <td>
-                {td.is_employed}
+                {td.is_employed.toString()}
             </td>
             <td>
                 {td.status}
@@ -126,53 +127,57 @@ function App () {
 
     return (
         <section className="container-fluid">
-            <header className='mb-3 py-5 d-flex align-items-start'>
+            <header className="mb-3 py-5 d-flex align-items-start">
                 <section>
-                    <h1 className='font-weight-bold'>
+                    <h1 className="font-weight-bold">
                         Tecrum Create
                     </h1>
-                    <h6 className='text-muted'>
+                    <h6 className="text-muted">
                         Emplooyee portal
                     </h6>
                 </section>
-                <aside className='border-left border-dark p-4 w-25 h-100 ml-auto ep-stat d-flex'>
-                    <section className='aside-p1 mr-5'>
-                        <h1 className='ep-stat-totalcount'>
+                <aside className="border-left border-dark p-4 w-25 h-100 ml-auto ep-stat d-flex">
+                    <section className="aside-p1 mr-5">
+                        <h1 className="ep-stat-totalcount font-weight-bold">
                             {tableData.length}
                         </h1>
-                        <p className='text-muted'>
+                        <p className="text-muted">
                             Total Employees
                         </p>
                     </section>
-                    <section className='aside-p2'>
+                    <section className="aside-p2">
                         <ul className="list-unstyled">
                             <li className="list-item">
                                 <span className="text-muted mr-1">
                                     Active:
                                 </span>
-
-                                90
+                                <strong>
+                                    {_.filter(data, { status: 'Active' }).length}
+                                </strong>
                             </li>
                             <li className="list-item">
                                 <span className="text-muted mr-1">
                                     Suspended:
                                 </span>
-
-                                2
+                                <strong>
+                                    {_.filter(data, { status: 'Suspended' }).length}
+                                </strong>
                             </li>
                             <li className="list-item">
                                 <span className="text-muted mr-1">
                                     Inactive:
                                 </span>
-
-                                8
+                                <strong>
+                                    {_.filter(data, { status: 'Inactive' }).length}
+                                </strong>
                             </li>
                             <li className="list-item">
                                 <span className="text-muted mr-1">
                                     Terminated:
                                 </span>
-
-                                8
+                                <strong>
+                                    {_.filter(data, { status: 'Terminated' }).length}
+                                </strong>
                             </li>
                         </ul>
                     </section>
@@ -193,7 +198,7 @@ function App () {
             </main>
 
             {/*<footer>
-                <small className='text-muted'>
+                <small className="text-muted">
                     &copy; Footr
                 </small>
             </footer>*/}

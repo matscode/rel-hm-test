@@ -17,16 +17,18 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
     <React.StrictMode>
-        <Router>
-            <Switch>
-                <Route path="/">
-                    <App/>
-                </Route>
-                <Route path="/view/:id">
-                    {/* View Employee */}
-                </Route>
-            </Switch>
-        </Router>
+        <section className="pt-2 pb-5">
+            <Router>
+                <Switch>
+                    <Route path="/">
+                        <App/>
+                    </Route>
+                    <Route path="/view/:id">
+                        {/* View Employee */}
+                    </Route>
+                </Switch>
+            </Router>
+        </section>
     </React.StrictMode>,
     document.getElementById('root')
 );
