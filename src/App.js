@@ -1,9 +1,16 @@
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'react-tabulator/lib/styles.css';
 import React, {useState} from "react";
 import {ReactTabulator} from 'react-tabulator'
 
 function App () {
-    const [tableData, setTableData] = useState([])
+    const [data] = useState([
+        { id: 1, name: "Oli Bob", age: "12", col: "red", dob: "" },
+        { id: 2, name: "Mary May", age: "1", col: "blue", dob: "14/05/1982" },
+        { id: 3, name: "Christine Lobowski", age: "42", col: "green", dob: "22/05/1982" },
+        { id: 4, name: "Brendon Philips", age: "125", col: "orange", dob: "01/08/1980" },
+        { id: 5, name: "Margret Marmajuke", age: "16", col: "yellow", dob: "31/01/1999" },
+    ])
 
     const columns = [
         { title: "Name", field: "name", width: 150 },
@@ -13,14 +20,6 @@ function App () {
         { title: "Rating", field: "rating", hozAlign: "center", formatter: "star" },
         { title: "Passed?", field: "passed", hozAlign: "center", formatter: "tickCross" }
     ];
-
-    setTableData([
-        { id: 1, name: "Oli Bob", age: "12", col: "red", dob: "" },
-        { id: 2, name: "Mary May", age: "1", col: "blue", dob: "14/05/1982" },
-        { id: 3, name: "Christine Lobowski", age: "42", col: "green", dob: "22/05/1982" },
-        { id: 4, name: "Brendon Philips", age: "125", col: "orange", dob: "01/08/1980" },
-        { id: 5, name: "Margret Marmajuke", age: "16", col: "yellow", dob: "31/01/1999" },
-    ]);
 
     return (
         <section className="container-fluid">
@@ -34,8 +33,8 @@ function App () {
                 <em>List employees here</em>
 
                 <ReactTabulator
-                    data={this.tableData}
-                    columns={this.columns}
+                    data={data}
+                    columns={columns}
                     tooltips={true}
                     layout={"fitData"}
                 />
