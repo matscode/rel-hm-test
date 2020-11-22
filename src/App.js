@@ -1,54 +1,32 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import {useHistory} from "react-router-dom";
 import faker from 'faker';
 import * as _ from 'lodash'
+import moment from "moment";
 
 function App () {
+    // history
+    const history = useHistory();
+
     // generate some table data
 
     const [numOfRecord] = useState(10);
-    const genders = ['male', 'female']
-    const departments = [
+    const [data, setData] = useState([]);
+    const genders = useRef(['male', 'female'])
+    const departments = useRef([
         'Engineering',
         'Accounting',
         'Sales & Marketing',
         'Product'
-    ];
-    const statuses = [
+    ]);
+    const statuses = useRef([
         'Active',
         'Inactive',
         'Terminated',
         'Suspended'
-    ];
+    ]);
 
-    const tableData = [];
-
-    for (let i = 0; i < numOfRecord; i++) {
-        // pick a gender
-        const gender = faker.random.arrayElement(genders);
-        const department = faker.random.arrayElement(departments);
-        const first_name = faker.name.firstName(gender);
-        const last_name = faker.name.lastName(gender);
-        const status = faker.random.arrayElement(statuses)
-
-        tableData.push({
-            profile_picture: faker.image.people(150, 150, true),
-            employee_id: faker.random.uuid().substring(0, 7),
-            first_name,
-            last_name,
-            date_of_birth: faker.date.past().toDateString(),
-            gender,
-            phone_number: faker.phone.phoneNumber(),
-            email_address: faker.internet.email(first_name, last_name).toLowerCase(),
-            home_address: faker.address.streetAddress(true),
-            department,
-            date_employed: faker.date.past().toDateString(),
-            is_employed: faker.random.arrayElement([true, false]),
-            status,
-            created_at: faker.date.past().toDateString(),
-        })
-    }
-
-    const columns = [
+    const columns = useRef([
         { title: "Photo", field: "profile_picture" },
         { title: "Employee ID", field: "employee_id" },
         { title: "First name", field: "first_name" },
@@ -63,67 +41,51 @@ function App () {
         { title: "Is employed?", field: "is_employed", hozAlign: "center", formatter: "tickCross" },
         { title: "Status", field: "status", },
         { title: "Created at", field: "created_at" },
-    ];
+    ]);
 
+    useEffect(() => {
+        const td = [];
+        const gd = localStorage.getItem('employees') || '[]';
+        const gdCount = JSON.parse(gd).length;
 
-    const [data] = useState(tableData)
+        // generate new record on number of record change
+        if (gdCount!==numOfRecord || !gdCount) {
+            for (let i = 0; i < numOfRecord; i++) {
+                // pick a gender
+                const gender = faker.random.arrayElement(genders.current);
+                const department = faker.random.arrayElement(departments.current);
+                const first_name = faker.name.firstName(gender);
+                const last_name = faker.name.lastName(gender);
+                const status = faker.random.arrayElement(statuses.current)
 
-    const tableHeader = (
-        <tr>
-            {columns.map(c => (
-                <th>
-                    {c.title}
-                </th>
-            ))}
-        </tr>
-    );
+                td.push({
+                    profile_picture: faker.image.people(180, 180, true),
+                    employee_id: faker.random.uuid().substring(0, 7),
+                    first_name,
+                    last_name,
+                    date_of_birth: moment(faker.date.past().toISOString()).format('YYYY-MM-DD'),
+                    gender,
+                    phone_number: faker.phone.phoneNumber(),
+                    email_address: faker.internet.email(first_name, last_name).toLowerCase(),
+                    home_address: faker.address.streetAddress(true),
+                    department,
+                    date_employed: moment(faker.date.past().toISOString()).format('YYYY-MM-DD'),
+                    is_employed: faker.random.arrayElement([true, false]),
+                    status,
+                    created_at: moment(faker.date.past().toISOString()).format('YYYY-MM-DD'),
+                })
+            }
+            setData(td);
+        } else {
+            setData(JSON.parse(gd));
+        }
 
-    const tableBody = data.map(td => (
-        <tr>
-            <td>
-                <img src={td.profile_picture} alt={td.first_name} width={60}/>
-            </td>
-            <td>
-                {td.employee_id}
-            </td>
-            <td>
-                {td.first_name}
-            </td>
-            <td>
-                {td.last_name}
-            </td>
-            <td>
-                {td.date_of_birth}
-            </td>
-            <td>
-                {td.gender}
-            </td>
-            <td>
-                {td.phone_number}
-            </td>
-            <td>
-                {td.email_address}
-            </td>
-            <td>
-                {td.home_address}
-            </td>
-            <td>
-                {td.department}
-            </td>
-            <td>
-                {td.date_employed}
-            </td>
-            <td>
-                {td.is_employed.toString()}
-            </td>
-            <td>
-                {td.status}
-            </td>
-            <td>
-                {td.created_at}
-            </td>
-        </tr>
-    ));
+    }, [numOfRecord])
+
+    // persist data
+    useEffect(() => {
+        localStorage.setItem('employees', JSON.stringify(data));
+    }, [data]);
 
     return (
         <section className="container-fluid">
@@ -132,14 +94,14 @@ function App () {
                     <h1 className="font-weight-bold">
                         Tecrum Create
                     </h1>
-                    <h6 className="text-muted">
-                        Emplooyee portal
-                    </h6>
+                    <h5 className="text-muted">
+                        Employee portal
+                    </h5>
                 </section>
                 <aside className="border-left border-dark p-4 w-25 h-100 ml-auto ep-stat d-flex">
                     <section className="aside-p1 mr-5">
                         <h1 className="ep-stat-totalcount font-weight-bold">
-                            {tableData.length}
+                            {data.length}
                         </h1>
                         <p className="text-muted">
                             Total Employees
@@ -188,20 +150,70 @@ function App () {
                 <section className="employee-record table-responsive">
                     <table className="table table-striped table-borderless table-hover employee-records-table">
                         <thead className="thead-dark">
-                        {tableHeader}
+                        {(
+                            <tr>
+                                {columns.current.map(c => (
+                                    <th key={c.field}>
+                                        {c.title}
+                                    </th>
+                                ))}
+                            </tr>
+                        )}
                         </thead>
                         <tbody>
-                        {tableBody}
+                        {data.map((td, index) => (
+                            <tr onClick={() => {
+                                history.push(`/view/${index}`)
+                            }} className="cursor-pointer" key={td.employee_id}>
+                                <td>
+                                    <img src={td.profile_picture} alt={td.first_name} width={60}/>
+                                </td>
+                                <td>
+                                    {td.employee_id}
+                                </td>
+                                <td>
+                                    {td.first_name}
+                                </td>
+                                <td>
+                                    {td.last_name}
+                                </td>
+                                <td>
+                                    {moment(td.date_of_birth).calendar()}
+                                </td>
+                                <td>
+                                    {td.gender}
+                                </td>
+                                <td>
+                                    {td.phone_number}
+                                </td>
+                                <td>
+                                    {td.email_address}
+                                </td>
+                                <td>
+                                    {td.home_address}
+                                </td>
+                                <td>
+                                    {td.department}
+                                </td>
+                                <td>
+                                    {moment(td.date_employed).fromNow()}
+                                </td>
+                                <td>
+                                    {td.is_employed.toString()}
+                                </td>
+                                <td>
+                                    {td.status}
+                                </td>
+                                <td>
+                                    {moment(td.created_at).fromNow()}
+                                </td>
+                            </tr>
+                        ))}
                         </tbody>
                     </table>
                 </section>
             </main>
 
-            {/*<footer>
-                <small className="text-muted">
-                    &copy; Footr
-                </small>
-            </footer>*/}
         </section>
     );
 }

@@ -13,6 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'react-tabulator/css/bootstrap/tabulator_bootstrap4.min.css';
 import 'react-tabulator/lib/styles.css';
 import App from './App';
+import ViewEmployee from './ViewEmployee';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
@@ -20,11 +21,11 @@ ReactDOM.render(
         <section className="pt-2 pb-5">
             <Router>
                 <Switch>
-                    <Route path="/">
+                    <Route exact path="/">
                         <App/>
                     </Route>
-                    <Route path="/view/:id">
-                        {/* View Employee */}
+                    <Route exact path="/view/:id">
+                        <ViewEmployee/>
                     </Route>
                 </Switch>
             </Router>
