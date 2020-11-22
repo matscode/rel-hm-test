@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Link, useHistory, useParams} from "react-router-dom";
 import * as Yup from 'yup';
+import moment from "moment";
 
 // import * as _ from 'lodash'
 import {ErrorMessage, Field, Form, Formik} from "formik";
@@ -9,11 +10,13 @@ function ViewEmployee () {
     // history
     const history = useHistory();
     const { id } = useParams();
+    const [employees, setEmployees] = useState([]);
     const [employeeData, setEmployeeData] = useState({});
 
     useEffect(() => {
         const employeesString = localStorage.getItem('employees') || '[]';
         const employees = JSON.parse(employeesString);
+        setEmployees(employees)
 
         if (!employees.length || !employees[id]) {
             history.push('/');
@@ -21,6 +24,13 @@ function ViewEmployee () {
 
         setEmployeeData(employees[id])
     }, [id, history]);
+
+    function confirmThisEmployee () {
+        employees[id].date_confirmed = moment().format('YYYY-MM-DD')
+        setEmployeeData(employees[id])
+        // overwrite employee data in storage
+        localStorage.setItem('employees', JSON.stringify(employees));
+    }
 
     return (
         <section className="container-fluid">
@@ -36,14 +46,19 @@ function ViewEmployee () {
             </header>
 
             <main>
-                <section className="admins-actions text-right">
-                    <button className="btn btn-outline-info mr-3">
+                <section className="admins-actions text-right mb-5 mb-md-auto pb-4 pb-md-0">
+                    <button className="btn btn-outline-info mr-3"
+                            disabled={true}
+                            title={'WIP'}>
                         Edit Information
                     </button>
 
-                    <button className="btn btn-primary">
-                        Confirm Employee
-                    </button>
+                    {!employeeData.date_confirmed
+                        ? <button className="btn btn-primary"
+                                  onClick={() => confirmThisEmployee()}>
+                            Confirm Employee
+                        </button>
+                        : null}
                 </section>
 
                 <section className="border my-3 p-3 rounded">
@@ -93,8 +108,12 @@ function ViewEmployee () {
                                 })}
 
                                 onSubmit={(values, { setSubmitting }) => {
-                                    console.log(values)
+                                    employees[id] = values;
+                                    // overwrite employee data in storage
+                                    localStorage.setItem('employees', JSON.stringify(employees));
+                                    setEmployeeData(values)
                                     setSubmitting(false);
+                                    history.push('/')
                                 }
                                 }>
                                 {formik => (
@@ -230,7 +249,7 @@ function ViewEmployee () {
                                                            className="d-block small font-weight-bold">
                                                         Date Employed
                                                     </label>
-                                                    <Field type="text"
+                                                    <Field type="date"
                                                            name="date_employed"
                                                            id="date_employed"
                                                            className="form-control bg-light"/>
@@ -244,7 +263,7 @@ function ViewEmployee () {
                                                            className="d-block small font-weight-bold">
                                                         Date Confirmed
                                                     </label>
-                                                    <Field type="text"
+                                                    <Field type="date"
                                                            name="date_confirmed"
                                                            id="date_confirmed"
                                                            className="form-control bg-light"/>
@@ -299,14 +318,14 @@ function ViewEmployee () {
 
                                             <section className="text-right">
                                                 <button type="reset"
-                                                        className="btn btn-outline-warning mr-3">
+                                                        className="btn btn-outline-danger mr-3">
                                                     Cancel
                                                 </button>
 
                                                 <button type="submit"
                                                         className="btn btn-primary"
                                                         disabled={formik.isSubmitting}>
-                                                    Submit
+                                                    Save
                                                 </button>
                                             </section>
                                         </Form>

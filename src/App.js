@@ -70,6 +70,7 @@ function App () {
                     home_address: faker.address.streetAddress(true),
                     department,
                     date_employed: moment(faker.date.past().toISOString()).format('YYYY-MM-DD'),
+                    date_confirmed: faker.random.arrayElement(['', moment(faker.date.past().toISOString()).format('YYYY-MM-DD')]),
                     is_employed: faker.random.arrayElement([true, false]),
                     status,
                     created_at: moment(faker.date.past().toISOString()).format('YYYY-MM-DD'),
