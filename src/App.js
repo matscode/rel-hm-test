@@ -90,7 +90,7 @@ function App () {
 
     return (
         <section className="container-fluid">
-            <header className="mb-3 py-5 d-flex align-items-start">
+            <header className="mb-3 py-5 d-flex align-items-start flex-wrap justify-content-between">
                 <section>
                     <h1 className="font-weight-bold">
                         Tecrum Create
@@ -99,7 +99,8 @@ function App () {
                         Employee portal
                     </h5>
                 </section>
-                <aside className="border-left border-dark p-4 w-25 h-100 ml-auto ep-stat d-flex">
+
+                <aside className="border-left border-dark p-4 ep-stat d-flex">
                     <section className="aside-p1 mr-5">
                         <h1 className="ep-stat-totalcount font-weight-bold">
                             {data.length}
@@ -108,6 +109,7 @@ function App () {
                             Total Employees
                         </p>
                     </section>
+
                     <section className="aside-p2">
                         <ul className="list-unstyled">
                             <li className="list-item">
@@ -148,6 +150,10 @@ function App () {
             </header>
 
             <main>
+                <section className="search-and-filter">
+                    
+                </section>
+
                 <section className="employee-record table-responsive">
                     <table className="table table-striped table-borderless table-hover employee-records-table">
                         <thead className="thead-dark">

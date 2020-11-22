@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Link, useHistory, useParams} from "react-router-dom";
 import * as Yup from 'yup';
 import moment from "moment";
-
 // import * as _ from 'lodash'
 import {ErrorMessage, Field, Form, Formik} from "formik";
 
@@ -12,6 +11,7 @@ function ViewEmployee () {
     const { id } = useParams();
     const [employees, setEmployees] = useState([]);
     const [employeeData, setEmployeeData] = useState({});
+    const [employeeStatus, setEmployeeStatus] = useState('confirmed');
 
     useEffect(() => {
         const employeesString = localStorage.getItem('employees') || '[]';
@@ -23,11 +23,13 @@ function ViewEmployee () {
         }
 
         setEmployeeData(employees[id])
+        setEmployeeStatus(employees[id].date_confirmed)
     }, [id, history]);
 
     function confirmThisEmployee () {
         employees[id].date_confirmed = moment().format('YYYY-MM-DD')
         setEmployeeData(employees[id])
+        setEmployeeStatus(employees[id].date_confirmed)
         // overwrite employee data in storage
         localStorage.setItem('employees', JSON.stringify(employees));
     }
@@ -46,14 +48,14 @@ function ViewEmployee () {
             </header>
 
             <main>
-                <section className="admins-actions text-right mb-5 mb-md-auto pb-4 pb-md-0">
+                <section className="admins-actions text-right mb-5 mb-md-auto pb-5 pb-md-0">
                     <button className="btn btn-outline-info mr-3"
                             disabled={true}
                             title={'WIP'}>
                         Edit Information
                     </button>
 
-                    {!employeeData.date_confirmed
+                    {!employeeStatus
                         ? <button className="btn btn-primary"
                                   onClick={() => confirmThisEmployee()}>
                             Confirm Employee
