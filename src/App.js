@@ -257,58 +257,64 @@ function App () {
             </header>
 
             <main>
-                <section className="search-and-filter mb-3 d-flex align-items-center">
-                    <section className="mr-3">
-                        <input type="text"
-                               value={search}
-                               className="form-control bg-light"
-                               placeholder="Search for employee"
-                               onChange={(e) => handleSearch(e)}/>
-                    </section>
+                <section className="search-and-filter mb-3 d-flex align-items-center flex-wrap-reverse">
+                    <section className="d-flex align-items-center flex-wrap">
+                        <section className="mr-3 my-2">
+                            <input type="text"
+                                   value={search}
+                                   className="form-control bg-light"
+                                   placeholder="Search for employee"
+                                   onChange={(e) => handleSearch(e)}/>
+                        </section>
+                        <section className="d-flex align-items-center pl-0 pl-md-3 flex-wrap my-2">
+                            <section className="d-flex align-items-center flex-wrap">
+                                <section className="text-info text-nowrap mr-3">
+                                    Filter by
+                                </section>
 
-                    <section className="d-flex align-items-center border-left pl-3">
-                        <section className="d-flex align-items-center">
-                        <span className="text-info text-nowrap mr-3">
-                            Filter by
-                        </span>
+                                <section className="d-inline-flex align-items-center my-2 my-md-2">
+                                    <span className="text-nowrap mr-2">
+                                        => Confirmation
+                                    </span>
+                                    <select value={confirmationFilter}
+                                            onChange={(e) => handleConfirmFilter(e)}
+                                            className="form-control bg-light mr-3">
+                                        <option value="">-- select --</option>
+                                        <option value="confirmed">Confirmed</option>
+                                        <option value="unconfirmed">Unconfirmed</option>
+                                    </select>
+                                </section>
 
-                            <span className="text-nowrap mr-2">
-                            => Confirmation
-                        </span>
-                            <select value={confirmationFilter}
-                                    onChange={(e) => handleConfirmFilter(e)}
-                                    className="form-control bg-light mr-3">
-                                <option value="">-- select --</option>
-                                <option value="confirmed">Confirmed</option>
-                                <option value="unconfirmed">Unconfirmed</option>
-                            </select>
+                                <section className="d-inline-flex align-items-center">
+                                <span className="text-nowrap mr-2">
+                                    => Status
+                                </span>
+                                    <select value={statusFilter}
+                                            onChange={(e) => handleStatusFilter(e)}
+                                            className="form-control bg-light mr-2">
+                                        <option value="">-- Select --</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                        <option value="Terminated">Terminated</option>
+                                        <option value="Suspended">Suspended</option>
+                                    </select>
+                                </section>
 
-                            <span className="text-nowrap mr-2">
-                            => Status
-                        </span>
-                            <select value={statusFilter}
-                                    onChange={(e) => handleStatusFilter(e)}
-                                    className="form-control bg-light mr-2">
-                                <option value="">-- Select --</option>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                                <option value="Terminated">Terminated</option>
-                                <option value="Suspended">Suspended</option>
-                            </select>
-
-                            {search || confirmationFilter || statusFilter
-                                ? <button className="btn btn-danger btn-sm text-nowrap"
-                                          onClick={() => clearFilters()}>
-                                    Clear filters
-                                </button>
-                                : null}
+                                {search || confirmationFilter || statusFilter
+                                    ? <button className="btn btn-danger btn-sm text-nowrap"
+                                              onClick={() => clearFilters()}>
+                                        Clear filters
+                                    </button>
+                                    : null}
+                            </section>
                         </section>
                     </section>
+
                     {fileContent &&
-                    <section className="ml-auto">
+                    <section className="ml-auto my-2 mr-3">
                         <a href={fileContent}
                            download={faker.random.uuid()}>
-                            Download employee data
+                            Download employee record
                         </a>
                     </section>}
                 </section>
