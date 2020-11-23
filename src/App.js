@@ -104,6 +104,54 @@ function App () {
                         name: 'first_name',
                         label: 'First name',
                     },
+                    {
+                        name: 'last_name',
+                        label: 'Last name',
+                    },
+                    {
+                        name: 'date_of_birth',
+                        label: 'Date of Birth',
+                    },
+                    {
+                        name: 'gender',
+                        label: 'Gender',
+                    },
+                    {
+                        name: 'phone_number',
+                        label: 'Phone Number',
+                    },
+                    {
+                        name: 'email_address',
+                        label: 'Email Address',
+                    },
+                    {
+                        name: 'home_address',
+                        label: 'Home Address',
+                    },
+                    {
+                        name: 'department',
+                        label: 'Department',
+                    },
+                    {
+                        name: 'date_employed',
+                        label: 'Date Employed',
+                    },
+                    {
+                        name: 'date_confirmed',
+                        label: 'Date Confirmed',
+                    },
+                    {
+                        name: 'is_employed',
+                        label: 'Is Employed',
+                    },
+                    {
+                        name: 'status',
+                        label: 'Status',
+                    },
+                    {
+                        name: 'created_at',
+                        label: 'Created At',
+                    },
                 ],
         };
 
