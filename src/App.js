@@ -167,7 +167,7 @@ function App () {
     }
 
     function handleSearch (e) {
-        const sq = e.target.value;
+        const sq = e.target.value.toLowerCase(); // normal input for mobile sake to improve search
         setSearch(sq)
     }
 
