@@ -3,14 +3,18 @@ import {useHistory} from "react-router-dom";
 import faker from 'faker';
 import * as _ from 'lodash'
 import moment from "moment";
+import jsonCSV from 'json-csv'
 
 function App () {
     // history
     const history = useHistory();
 
+    const [search, setSearch] = useState('');
+    const [confirmationFilter, setConfirmationFilter] = useState('');
+    const [statusFilter, setStatusFilter] = useState('');
+    const [fileContent, setFileContent] = useState('');
     // generate some table data
-
-    const [numOfRecord] = useState(10);
+    const [numOfRecord] = useState(5);
     const [data, setData] = useState([]);
     const genders = useRef(['male', 'female'])
     const departments = useRef([
@@ -44,11 +48,19 @@ function App () {
     ]);
 
     useEffect(() => {
+        loadEmployeeData()
+    }, [numOfRecord])
+
+    // persist data
+    useEffect(() => {
+        localStorage.setItem('employees', JSON.stringify(data));
+    }, [data]);
+
+    function loadEmployeeData () {
         const td = [];
         const gd = localStorage.getItem('employees') || '[]';
-        const gdCount = JSON.parse(gd).length;
-
-        // generate new record on number of record change
+        const gdCount = JSON.parse(gd).length
+        // generate records if none exist
         if (gdCount!==numOfRecord || !gdCount) {
             for (let i = 0; i < numOfRecord; i++) {
                 // pick a gender
@@ -77,16 +89,55 @@ function App () {
                 })
             }
             setData(td);
+            makeDownloadableCSV(td)
         } else {
             setData(JSON.parse(gd));
+            makeDownloadableCSV(JSON.parse(gd))
         }
+    }
 
-    }, [numOfRecord])
+    function makeDownloadableCSV (data) {
+        const csvOption = {
+            fields:
+                [
+                    {
+                        name: 'first_name',
+                        label: 'First name',
+                    },
+                ],
+        };
 
-    // persist data
-    useEffect(() => {
-        localStorage.setItem('employees', JSON.stringify(data));
-    }, [data]);
+        jsonCSV
+            .buffered(data, csvOption)
+            .then((csv) => {
+                setFileContent(`data:text/plain;charset=utf-8,${encodeURIComponent(csv)}`);
+            })
+            .catch((e) => {
+                console.log(e)
+                alert('There is an error generating CSV for download, you can however continue to use the app')
+            })
+    }
+
+    function handleSearch (e) {
+        const sq = e.target.value;
+        setSearch(sq)
+    }
+
+    function handleConfirmFilter (e) {
+        const filter = e.target.value;
+        setConfirmationFilter(filter)
+    }
+
+    function handleStatusFilter (e) {
+        const filter = e.target.value;
+        setStatusFilter(filter)
+    }
+
+    function clearFilters () {
+        setSearch('')
+        setConfirmationFilter('')
+        setStatusFilter('')
+    }
 
     return (
         <section className="container-fluid">
@@ -144,14 +195,74 @@ function App () {
                                     {_.filter(data, { status: 'Terminated' }).length}
                                 </strong>
                             </li>
+                            <li className="list-item">
+                                <span className="text-muted mr-1">
+                                    Confirmed:
+                                </span>
+                                <strong>
+                                    {_.filter(data, (v) => v.date_confirmed).length}
+                                </strong>
+                            </li>
                         </ul>
                     </section>
                 </aside>
             </header>
 
             <main>
-                <section className="search-and-filter">
-                    
+                <section className="search-and-filter mb-3 d-flex align-items-center">
+                    <section className="mr-3">
+                        <input type="text"
+                               value={search}
+                               className="form-control bg-light"
+                               placeholder="Search for employee"
+                               onChange={(e) => handleSearch(e)}/>
+                    </section>
+
+                    <section className="d-flex align-items-center border-left pl-3">
+                        <section className="d-flex align-items-center">
+                        <span className="text-info text-nowrap mr-3">
+                            Filter by
+                        </span>
+
+                            <span className="text-nowrap mr-2">
+                            => Confirmation
+                        </span>
+                            <select value={confirmationFilter}
+                                    onChange={(e) => handleConfirmFilter(e)}
+                                    className="form-control bg-light mr-3">
+                                <option value="">-- select --</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="unconfirmed">Unconfirmed</option>
+                            </select>
+
+                            <span className="text-nowrap mr-2">
+                            => Status
+                        </span>
+                            <select value={statusFilter}
+                                    onChange={(e) => handleStatusFilter(e)}
+                                    className="form-control bg-light mr-2">
+                                <option value="">-- Select --</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                                <option value="Terminated">Terminated</option>
+                                <option value="Suspended">Suspended</option>
+                            </select>
+
+                            {search || confirmationFilter || statusFilter
+                                ? <button className="btn btn-danger btn-sm text-nowrap"
+                                          onClick={() => clearFilters()}>
+                                    Clear filters
+                                </button>
+                                : null}
+                        </section>
+                    </section>
+                    {fileContent &&
+                    <section className="ml-auto">
+                        <a href={fileContent}
+                           download={faker.random.uuid()}>
+                            Download employee data
+                        </a>
+                    </section>}
                 </section>
 
                 <section className="employee-record table-responsive">
@@ -168,54 +279,86 @@ function App () {
                         )}
                         </thead>
                         <tbody>
-                        {data.map((td, index) => (
-                            <tr onClick={() => {
-                                history.push(`/view/${index}`)
-                            }} className="cursor-pointer" key={td.employee_id}>
-                                <td>
-                                    <img src={td.profile_picture} alt={td.first_name} width={60}/>
-                                </td>
-                                <td>
-                                    {td.employee_id}
-                                </td>
-                                <td>
-                                    {td.first_name}
-                                </td>
-                                <td>
-                                    {td.last_name}
-                                </td>
-                                <td>
-                                    {moment(td.date_of_birth).calendar()}
-                                </td>
-                                <td>
-                                    {td.gender}
-                                </td>
-                                <td>
-                                    {td.phone_number}
-                                </td>
-                                <td>
-                                    {td.email_address}
-                                </td>
-                                <td>
-                                    {td.home_address}
-                                </td>
-                                <td>
-                                    {td.department}
-                                </td>
-                                <td>
-                                    {moment(td.date_employed).fromNow()}
-                                </td>
-                                <td>
-                                    {td.is_employed.toString()}
-                                </td>
-                                <td>
-                                    {td.status}
-                                </td>
-                                <td>
-                                    {moment(td.created_at).fromNow()}
-                                </td>
-                            </tr>
-                        ))}
+                        {data
+                            .filter((std) => {
+                                if (search) {
+                                    return std.first_name.toLowerCase().indexOf(search)!== -1
+                                        || std.last_name.toLowerCase().indexOf(search)!== -1
+                                        || std.email_address.toLowerCase().indexOf(search)!== -1
+                                        || std.department.toLowerCase().indexOf(search)!== -1;
+                                }
+
+                                // no filter
+                                return true;
+                            })
+                            .filter((cftd) => {
+                                if (confirmationFilter==='confirmed' && !!cftd.date_confirmed) {
+                                    return true;
+                                } else if (confirmationFilter==='unconfirmed' && !cftd.date_confirmed) {
+                                    return true;
+                                } else if (!confirmationFilter) {
+                                    return true;
+                                }
+
+                                // no filter
+                                return false;
+                            })
+                            .filter((sftd) => {
+                                if (statusFilter) {
+                                    return sftd.status.toLowerCase()===statusFilter.toLowerCase();
+                                }
+
+                                // no filter
+                                return true;
+                            })
+                            .map((td, index) => (
+                                <tr onClick={() => {
+                                    history.push(`/view/${index}`)
+                                }} className="cursor-pointer" key={td.employee_id}>
+                                    <td>
+                                        <img src={td.profile_picture} alt={td.first_name} width={60}/>
+                                    </td>
+                                    <td>
+                                        {td.employee_id}
+                                    </td>
+                                    <td>
+                                        {td.first_name}
+                                    </td>
+                                    <td>
+                                        {td.last_name}
+                                    </td>
+                                    <td>
+                                        {moment(td.date_of_birth).calendar()}
+                                    </td>
+                                    <td>
+                                        {td.gender}
+                                    </td>
+                                    <td>
+                                        {td.phone_number}
+                                    </td>
+                                    <td>
+                                        {td.email_address}
+                                    </td>
+                                    <td>
+                                        {td.home_address}
+                                    </td>
+                                    <td>
+                                        {td.department}
+                                    </td>
+                                    <td>
+                                        {moment(td.date_employed).fromNow()}
+                                    </td>
+                                    <td>
+                                        {td.is_employed.toString()}
+                                    </td>
+                                    <td>
+                                        {td.status}
+                                    </td>
+                                    <td>
+                                        {moment(td.created_at).fromNow()}
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </section>
