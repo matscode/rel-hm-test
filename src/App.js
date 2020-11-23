@@ -313,7 +313,7 @@ function App () {
                     {fileContent &&
                     <section className="ml-auto my-2 mr-3">
                         <a href={fileContent}
-                           download={faker.random.uuid()}>
+                           download={`${faker.random.uuid()}.csv`}>
                             Download employee record
                         </a>
                     </section>}
