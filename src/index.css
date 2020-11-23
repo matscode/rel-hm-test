@@ -64,6 +64,13 @@ a:hover {
 
 .form-control {
     border-width: 2px !important;
+    background-color: #f8f9fa;
+}
+
+.form-control[readonly],
+/*.form-control:read-only,*/
+.form-control:disabled {
+    /*background-color: #d6dbe7;*/
 }
 
 label {

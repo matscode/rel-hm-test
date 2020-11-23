@@ -12,6 +12,7 @@ function ViewEmployee () {
     const [employees, setEmployees] = useState([]);
     const [employeeData, setEmployeeData] = useState({});
     const [employeeStatus, setEmployeeStatus] = useState('confirmed');
+    const [editMode, setEditMode] = useState(false);
 
     useEffect(() => {
         const employeesString = localStorage.getItem('employees') || '[]';
@@ -36,7 +37,7 @@ function ViewEmployee () {
 
     return (
         <section className="container-fluid">
-            <header className="mb-3 py-5 d-flex align-items-start">
+            <header className="mb-5 py-5 d-flex align-items-start">
                 <section>
                     <div>
                         <Link to={'/'}>&lt; Back</Link>
@@ -49,11 +50,11 @@ function ViewEmployee () {
 
             <main>
                 <section className="admins-actions text-right mb-5 mb-md-auto pb-5 pb-md-0">
+                    {!editMode &&
                     <button className="btn btn-outline-info mr-3"
-                            disabled={true}
-                            title={'WIP'}>
+                            onClick={() => setEditMode(true)}>
                         Edit Information
-                    </button>
+                    </button>}
 
                     {!employeeStatus
                         ? <button className="btn btn-primary"
@@ -116,8 +117,11 @@ function ViewEmployee () {
                                     setEmployeeData(values)
                                     setSubmitting(false);
                                     history.push('/')
-                                }
-                                }>
+                                }}
+
+                                onReset={(values) => {
+                                    setEditMode(false)
+                                }}>
                                 {formik => (
                                     <section className="container-fluid">
                                         <Form>
@@ -134,7 +138,8 @@ function ViewEmployee () {
                                                     <Field type="text"
                                                            name="first_name"
                                                            id="first_name"
-                                                           className="form-control bg-light"/>
+                                                           readOnly={!editMode}
+                                                           className="form-control"/>
                                                     <ErrorMessage
                                                         name="first_name"
                                                         component="div"
@@ -148,7 +153,8 @@ function ViewEmployee () {
                                                     <Field type="text"
                                                            name="last_name"
                                                            id="last_name"
-                                                           className="form-control bg-light"/>
+                                                           readOnly={!editMode}
+                                                           className="form-control"/>
                                                     <ErrorMessage
                                                         name="last_name"
                                                         component="div"
@@ -163,7 +169,8 @@ function ViewEmployee () {
                                                     <Field type="date"
                                                            name="date_of_birth"
                                                            id="date_of_birth"
-                                                           className="form-control bg-light"/>
+                                                           readOnly={!editMode}
+                                                           className="form-control"/>
                                                     <ErrorMessage
                                                         name="date_of_birth"
                                                         component="div"
@@ -178,7 +185,8 @@ function ViewEmployee () {
                                                     <Field as="select"
                                                            name="gender"
                                                            id="gender"
-                                                           className="form-control bg-light">
+                                                           disabled={!editMode}
+                                                           className="form-control">
                                                         <option value="">-- Select --</option>
                                                         <option value="male">Male</option>
                                                         <option value="female">Female</option>
@@ -203,7 +211,8 @@ function ViewEmployee () {
                                                     <Field type="text"
                                                            name="phone_number"
                                                            id="phone_number"
-                                                           className="form-control bg-light"/>
+                                                           readOnly={!editMode}
+                                                           className="form-control"/>
                                                     <ErrorMessage
                                                         name="phone_number"
                                                         component="div"
@@ -217,7 +226,8 @@ function ViewEmployee () {
                                                     <Field type="email"
                                                            name="email_address"
                                                            id="email_address"
-                                                           className="form-control bg-light"/>
+                                                           readOnly={!editMode}
+                                                           className="form-control"/>
                                                     <ErrorMessage
                                                         name="email_address"
                                                         component="div"
@@ -232,7 +242,8 @@ function ViewEmployee () {
                                                     <Field type="text"
                                                            name="home_address"
                                                            id="date_of_birth"
-                                                           className="form-control bg-light"/>
+                                                           readOnly={!editMode}
+                                                           className="form-control"/>
                                                     <ErrorMessage
                                                         name="home_address"
                                                         component="div"
@@ -254,7 +265,8 @@ function ViewEmployee () {
                                                     <Field type="date"
                                                            name="date_employed"
                                                            id="date_employed"
-                                                           className="form-control bg-light"/>
+                                                           readOnly={!editMode}
+                                                           className="form-control"/>
                                                     <ErrorMessage
                                                         name="date_employed"
                                                         component="div"
@@ -268,7 +280,8 @@ function ViewEmployee () {
                                                     <Field type="date"
                                                            name="date_confirmed"
                                                            id="date_confirmed"
-                                                           className="form-control bg-light"/>
+                                                           readOnly={!editMode}
+                                                           className="form-control"/>
                                                     <ErrorMessage
                                                         name="date_confirmed"
                                                         component="div"
@@ -283,7 +296,8 @@ function ViewEmployee () {
                                                     <Field as="select"
                                                            name="status"
                                                            id="status"
-                                                           className="form-control bg-light">
+                                                           disabled={!editMode}
+                                                           className="form-control">
                                                         <option value="">-- Select --</option>
                                                         <option value="Active">Active</option>
                                                         <option value="Inactive">Inactive</option>
@@ -304,7 +318,8 @@ function ViewEmployee () {
                                                     <Field as="select"
                                                            name="department"
                                                            id="department"
-                                                           className="form-control bg-light">
+                                                           disabled={!editMode}
+                                                           className="form-control">
                                                         <option value="">-- Select --</option>
                                                         <option value="Engineering">Engineering</option>
                                                         <option value="Accounting">Accounting</option>
@@ -318,6 +333,7 @@ function ViewEmployee () {
                                                 </div>
                                             </section>
 
+                                            {editMode &&
                                             <section className="text-right">
                                                 <button type="reset"
                                                         className="btn btn-outline-danger mr-3">
@@ -329,7 +345,7 @@ function ViewEmployee () {
                                                         disabled={formik.isSubmitting}>
                                                     Save
                                                 </button>
-                                            </section>
+                                            </section>}
                                         </Form>
 
                                     </section>

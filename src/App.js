@@ -14,7 +14,7 @@ function App () {
     const [statusFilter, setStatusFilter] = useState('');
     const [fileContent, setFileContent] = useState('');
     // generate some table data
-    const [numOfRecord] = useState(5);
+    const [numOfRecord] = useState(20);
     const [data, setData] = useState([]);
     const genders = useRef(['male', 'female'])
     const departments = useRef([
